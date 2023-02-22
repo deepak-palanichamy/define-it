@@ -1,6 +1,6 @@
 package dev.datapirate.dictionary.controller;
 
-import dev.datapirate.dictionary.entity.Response;
+import dev.datapirate.dictionary.entity.v1.Response;
 import dev.datapirate.dictionary.service.api.DictionaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

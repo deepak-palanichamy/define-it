@@ -1,4 +1,4 @@
-package dev.datapirate.dictionary.entity;
+package dev.datapirate.dictionary.entity.v1;
 
 import lombok.Data;
 
