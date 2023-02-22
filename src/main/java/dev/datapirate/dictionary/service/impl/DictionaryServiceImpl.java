@@ -1,10 +1,12 @@
 package dev.datapirate.dictionary.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.datapirate.dictionary.entity.BaseDefinitionResponse;
 import dev.datapirate.dictionary.entity.DefinitionResponse;
+import dev.datapirate.dictionary.entity.Response;
 import dev.datapirate.dictionary.entity.UnknownDefinitionResponse;
 import dev.datapirate.dictionary.service.api.DictionaryService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,35 +15,40 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Arrays;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class DictionaryServiceImpl implements DictionaryService {
+
+    private final ObjectMapper objectMapper;
+
     @Override
-    public BaseDefinitionResponse getDefinition(String word) throws IOException, InterruptedException {
+    public Response getDefinition(String word) throws IOException, InterruptedException {
+        log.info("Entering getDefinition(), word: {}", word);
+        if (word.isBlank()) {
+            throw new IllegalArgumentException("Word cannot be blank!");
+        }
         word = word.replace(" ", "%20");
-//        System.out.println(word);
-        HttpRequest request = HttpRequest.newBuilder()
+
+        HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.dictionaryapi.dev/api/v2/entries/en/" + word))
                 .timeout(Duration.ofSeconds(10))
                 .build();
-        HttpClient httpClient = HttpClient.newBuilder()
-                .build();
-        HttpResponse<String> response = httpClient
-                .send(request, HttpResponse.BodyHandlers.ofString());
-        ObjectMapper mapper = new ObjectMapper();
-        String responseBody = response.body();
-        BaseDefinitionResponse baseDefinitionResponse = new BaseDefinitionResponse();
+        HttpResponse<String> httpResponse = HttpClient.newBuilder()
+                .build()
+                .send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        String responseBody = httpResponse.body();
+        Response response = new Response();
         try {
-            DefinitionResponse[] definitionResponse = mapper.readValue(responseBody, DefinitionResponse[].class);
-            System.out.println(Arrays.toString(definitionResponse));
-            baseDefinitionResponse.setDefinition(definitionResponse);
+            DefinitionResponse[] definitionResponse = objectMapper.readValue(responseBody, DefinitionResponse[].class);
+            response.setDefinition(definitionResponse);
         } catch (Exception e) {
-            UnknownDefinitionResponse unknownDefinitionResponse = mapper.readValue(responseBody, UnknownDefinitionResponse.class);
-            System.out.println(unknownDefinitionResponse);
-            baseDefinitionResponse.setError(unknownDefinitionResponse);
+            UnknownDefinitionResponse unknownDefinitionResponse = objectMapper.readValue(responseBody, UnknownDefinitionResponse.class);
+            response.setError(unknownDefinitionResponse);
         }
-        return baseDefinitionResponse;
+        log.info("Leaving getDefinition(), response: {}", response);
+        return response;
     }
 }

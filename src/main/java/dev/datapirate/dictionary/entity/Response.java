@@ -3,7 +3,7 @@ package dev.datapirate.dictionary.entity;
 import lombok.Data;
 
 @Data
-public class BaseDefinitionResponse {
+public class Response {
 
     private Object error;
     private Object definition;
