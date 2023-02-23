@@ -1,14 +1,17 @@
 package dev.datapirate.dictionary.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.datapirate.dictionary.entity.v1.*;
 import dev.datapirate.dictionary.entity.v2.ConsolidatedDefinitionV2;
 import dev.datapirate.dictionary.entity.v2.DefinitionV2;
 import dev.datapirate.dictionary.entity.v2.MeaningV2;
 import dev.datapirate.dictionary.entity.v2.PhoneticV2;
+import dev.datapirate.dictionary.exception.DefinitionNotFoundException;
 import dev.datapirate.dictionary.service.api.DictionaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,7 +31,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public Response getDefinition(String word) throws IOException, InterruptedException {
+    public ConsolidatedDefinitionV2 getDefinition(String word) throws DefinitionNotFoundException, IOException, InterruptedException {
         log.info("Entering getDefinition(), word: {}", word);
         if (word.isBlank()) {
             throw new IllegalArgumentException("Word cannot be blank!");
@@ -45,17 +48,25 @@ public class DictionaryServiceImpl implements DictionaryService {
                 .send(httpRequest, HttpResponse.BodyHandlers.ofString());
         String responseBody = httpResponse.body();
         Response response = new Response();
+        ConsolidatedDefinitionV2 consolidatedDefinitionV2 = new ConsolidatedDefinitionV2();
         try {
             DefinitionResponse[] definitionResponse = objectMapper.readValue(responseBody, DefinitionResponse[].class);
             response.setDefinition(definitionResponse);
 
-            consolidateDefinition(definitionResponse);
-        } catch (Exception e) {
+            consolidatedDefinitionV2 = consolidateDefinition(definitionResponse);
+
+            log.info("Leaving getDefinition(), response: {}", response);
+            return consolidatedDefinitionV2;
+        } catch (JsonProcessingException e) {
             UnknownDefinitionResponse unknownDefinitionResponse = objectMapper.readValue(responseBody, UnknownDefinitionResponse.class);
             response.setError(unknownDefinitionResponse);
         }
+        if (response.getError() != null) {
+            throw new DefinitionNotFoundException("No Definitions Found for word:" + word.replace("%20", " "), HttpStatus.NOT_FOUND);
+        }
+
         log.info("Leaving getDefinition(), response: {}", response);
-        return response;
+        return consolidatedDefinitionV2;
     }
 
     private ConsolidatedDefinitionV2 consolidateDefinition(DefinitionResponse[] definitionResponses) {

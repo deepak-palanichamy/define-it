@@ -1,9 +1,7 @@
 package dev.datapirate.dictionary.service.api;
 
-import dev.datapirate.dictionary.entity.v1.Response;
-
-import java.io.IOException;
+import dev.datapirate.dictionary.entity.v2.ConsolidatedDefinitionV2;
 
 public interface DictionaryService {
-    Response getDefinition(String word) throws IOException, InterruptedException;
+    ConsolidatedDefinitionV2 getDefinition(String word) throws Exception;
 }
