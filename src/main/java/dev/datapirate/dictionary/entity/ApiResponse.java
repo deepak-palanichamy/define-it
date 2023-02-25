@@ -1,9 +1,11 @@
 package dev.datapirate.dictionary.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
 @Data
 public class ApiResponse<T> {
     private boolean success;
