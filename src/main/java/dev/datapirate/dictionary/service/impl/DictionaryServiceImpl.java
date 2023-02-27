@@ -34,7 +34,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     public ConsolidatedDefinitionV2 getDefinition(String word) throws DefinitionNotFoundException, IOException, InterruptedException {
         log.info("Entering getDefinition(), word: {}", word);
         if (word.isBlank()) {
-            throw new IllegalArgumentException("Word cannot be blank!");
+            throw new IllegalArgumentException("Word cannot be blank");
         }
         word = word.replace(" ", "%20");
 
@@ -62,7 +62,7 @@ public class DictionaryServiceImpl implements DictionaryService {
             response.setError(unknownDefinitionResponse);
         }
         if (response.getError() != null) {
-            throw new DefinitionNotFoundException("No Definitions Found for word:" + word.replace("%20", " "), HttpStatus.NOT_FOUND);
+            throw new DefinitionNotFoundException("No Definition(s) Found for word: " + word.replace("%20", " "), HttpStatus.NOT_FOUND);
         }
 
         log.info("Leaving getDefinition(), response: {}", response);
@@ -97,25 +97,18 @@ public class DictionaryServiceImpl implements DictionaryService {
                         List<String> synonyms = List.of(meaning.getSynonyms());
                         List<String> antonyms = List.of(meaning.getAntonyms());
                         return new MeaningV2(meaning.getPartOfSpeech(), definitions, synonyms, antonyms);
-                    }
+                    },
+                    MeaningV2::merge
             ));
             meanings.putAll(meaningMap);
         }
 
         ConsolidatedDefinitionV2 consolidatedDefinitionV2 = new ConsolidatedDefinitionV2();
-        consolidatedDefinitionV2.setWords(words);
+        consolidatedDefinitionV2.setWord(words);
         consolidatedDefinitionV2.setPhonetics(phonetics);
         consolidatedDefinitionV2.setMeanings(meanings);
 
-//        try {
-//            System.out.println(objectMapper.writeValueAsString(consolidatedDefinitionV2));
-//        } catch (JsonProcessingException e) {
-//            log.error("Error while converting POJO object into JSON string, e: {}", e.getMessage());
-//            throw new RuntimeException(e);
-//        }
-
         log.info("Leaving consolidateDefinition(), consolidatedDefinitionV2: {}", consolidatedDefinitionV2);
-//        log.info("Leaving consolidateDefinition()");
         return consolidatedDefinitionV2;
     }
 }
