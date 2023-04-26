@@ -6,7 +6,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import dev.datapirate.defineit.DictionaryApplication;
+import dev.datapirate.defineit.DefineItApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,9 +21,9 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 //            handler = new SpringBootProxyHandlerBuilder<AwsProxyRequest>()
 //                    .defaultProxy()
 //                    .asyncInit()
-//                    .springBootApplication(DictionaryApplication.class)
+//                    .springBootApplication(DefineItApplication.class)
 //                    .buildAndInitialize();
-            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(DictionaryApplication.class);
+            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(DefineItApplication.class);
         } catch (ContainerInitializationException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not initialize Spring Boot application", e);

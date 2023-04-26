@@ -1,4 +1,4 @@
-package dev.datapirate.defineit.entity.v1;
+package dev.datapirate.defineit.model.v1;
 
 import lombok.Data;
 

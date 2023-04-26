@@ -2,11 +2,11 @@ package dev.datapirate.defineit.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.datapirate.defineit.entity.v1.*;
-import dev.datapirate.defineit.entity.v2.ConsolidatedDefinitionV2;
-import dev.datapirate.defineit.entity.v2.DefinitionV2;
-import dev.datapirate.defineit.entity.v2.MeaningV2;
-import dev.datapirate.defineit.entity.v2.PhoneticV2;
+import dev.datapirate.defineit.model.v1.*;
+import dev.datapirate.defineit.model.v2.ConsolidatedDefinitionV2;
+import dev.datapirate.defineit.model.v2.DefinitionV2;
+import dev.datapirate.defineit.model.v2.MeaningV2;
+import dev.datapirate.defineit.model.v2.PhoneticV2;
 import dev.datapirate.defineit.exception.DefinitionNotFoundException;
 import dev.datapirate.defineit.service.api.DictionaryService;
 import lombok.RequiredArgsConstructor;

@@ -6,12 +6,16 @@ Globals:
     Timeout: 30
 
 Resources:
+  DefineItAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: $default
   DefineItGetDefinitionsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: .
       Handler: dev.datapirate.defineit.handler.StreamLambdaHandler::handleRequest
-      Runtime: java11s
+      Runtime: java11
       AutoPublishAlias: development
       SnapStart:
         ApplyOn: PublishedVersions
@@ -25,5 +29,6 @@ Resources:
         DefineItApi:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
+            RestApiId: !Ref DefineItAPI
             Path: /{proxy+}
             Method: ANY

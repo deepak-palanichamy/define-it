@@ -1,6 +1,8 @@
 spring:
   main:
     banner-mode: off
+  application:
+    name: DefineIt
 server:
   port: '8090'
 #  servlet:

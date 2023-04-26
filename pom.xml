@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.datapirate</groupId>
-    <artifactId>dictionary</artifactId>
+    <artifactId>define-it</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dictionary</name>
-    <description>dictionary</description>
+    <name>DefineIt REST application</name>
+    <description>Comprehensive application for looking up word definitions</description>
     <properties>
         <java.version>11</java.version>
     </properties>
