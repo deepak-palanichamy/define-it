@@ -1,8 +1,8 @@
-package dev.datapirate.dictionary.controller;
+package dev.datapirate.defineit.controller;
 
-import dev.datapirate.dictionary.entity.ApiResponse;
-import dev.datapirate.dictionary.entity.v2.ConsolidatedDefinitionV2;
-import dev.datapirate.dictionary.service.api.DictionaryService;
+import dev.datapirate.defineit.entity.ApiResponse;
+import dev.datapirate.defineit.entity.v2.ConsolidatedDefinitionV2;
+import dev.datapirate.defineit.service.api.DictionaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

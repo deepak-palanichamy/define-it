@@ -1,4 +1,4 @@
-package dev.datapirate.dictionary.entity;
+package dev.datapirate.defineit.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

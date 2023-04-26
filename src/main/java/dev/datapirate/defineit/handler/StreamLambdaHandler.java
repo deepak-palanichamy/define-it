@@ -1,4 +1,4 @@
-package dev.datapirate.dictionary.handler;
+package dev.datapirate.defineit.handler;
 
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
@@ -6,7 +6,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import dev.datapirate.dictionary.DictionaryApplication;
+import dev.datapirate.defineit.DictionaryApplication;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package dev.datapirate.dictionary.exception;
+package dev.datapirate.defineit.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

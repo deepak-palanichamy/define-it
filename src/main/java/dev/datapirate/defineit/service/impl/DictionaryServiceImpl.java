@@ -1,14 +1,14 @@
-package dev.datapirate.dictionary.service.impl;
+package dev.datapirate.defineit.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.datapirate.dictionary.entity.v1.*;
-import dev.datapirate.dictionary.entity.v2.ConsolidatedDefinitionV2;
-import dev.datapirate.dictionary.entity.v2.DefinitionV2;
-import dev.datapirate.dictionary.entity.v2.MeaningV2;
-import dev.datapirate.dictionary.entity.v2.PhoneticV2;
-import dev.datapirate.dictionary.exception.DefinitionNotFoundException;
-import dev.datapirate.dictionary.service.api.DictionaryService;
+import dev.datapirate.defineit.entity.v1.*;
+import dev.datapirate.defineit.entity.v2.ConsolidatedDefinitionV2;
+import dev.datapirate.defineit.entity.v2.DefinitionV2;
+import dev.datapirate.defineit.entity.v2.MeaningV2;
+import dev.datapirate.defineit.entity.v2.PhoneticV2;
+import dev.datapirate.defineit.exception.DefinitionNotFoundException;
+import dev.datapirate.defineit.service.api.DictionaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

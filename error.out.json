@@ -1,0 +1,8 @@
+{
+    "success": false,
+    "data": null,
+    "errors": [
+        "No Definition(s) Found for word: unknownword"
+    ],
+    "errorCode": 404
+}

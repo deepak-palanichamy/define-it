@@ -2,11 +2,11 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "dictionary-application"
+stack_name = "DefineIt"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-hfiba3ikoic9"
-s3_prefix = "dictionary-application"
+s3_prefix = "DefineIt"
 region = "us-east-1"
-profile = "default"
+profile = "deepak-personal"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true

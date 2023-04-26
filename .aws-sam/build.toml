@@ -5,9 +5,9 @@
 codeuri = "/home/deepak/personal/codebase/github/dictionary"
 runtime = "java11"
 architecture = "x86_64"
-handler = "dev.datapirate.dictionary.handler.StreamLambdaHandler::handleRequest"
+handler = "dev.datapirate.defineit.handler.StreamLambdaHandler::handleRequest"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["DictionaryGetDefinitionsFunction"]
+functions = ["DefineItGetDefinitionsFunction"]
 
 [layer_build_definitions]
