@@ -2,12 +2,15 @@ package dev.datapirate.defineit.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.datapirate.defineit.model.v1.*;
+import dev.datapirate.defineit.exception.DefinitionNotFoundException;
+import dev.datapirate.defineit.model.v1.DefinitionResponse;
+import dev.datapirate.defineit.model.v1.Meaning;
+import dev.datapirate.defineit.model.v1.Response;
+import dev.datapirate.defineit.model.v1.UnknownDefinitionResponse;
 import dev.datapirate.defineit.model.v2.ConsolidatedDefinitionV2;
 import dev.datapirate.defineit.model.v2.DefinitionV2;
 import dev.datapirate.defineit.model.v2.MeaningV2;
 import dev.datapirate.defineit.model.v2.PhoneticV2;
-import dev.datapirate.defineit.exception.DefinitionNotFoundException;
 import dev.datapirate.defineit.service.api.DictionaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +56,7 @@ public class DictionaryServiceImpl implements DictionaryService {
             DefinitionResponse[] definitionResponse = objectMapper.readValue(responseBody, DefinitionResponse[].class);
             response.setDefinition(definitionResponse);
 
-            consolidatedDefinitionV2 = consolidateDefinition(definitionResponse);
+            consolidatedDefinitionV2 = consolidateDefinitionNew(definitionResponse);
 
             log.info("Leaving getDefinition(), response: {}", response);
             return consolidatedDefinitionV2;
@@ -69,33 +72,77 @@ public class DictionaryServiceImpl implements DictionaryService {
         return consolidatedDefinitionV2;
     }
 
-    private ConsolidatedDefinitionV2 consolidateDefinition(DefinitionResponse[] definitionResponses) {
-        log.info("Entering consolidateDefinition(), # of definitionResponses: {}", definitionResponses.length);
+//    private ConsolidatedDefinitionV2 consolidateDefinition(DefinitionResponse[] definitionResponses) {
+//        log.info("Entering consolidateDefinition(), # of definitionResponses: {}", definitionResponses.length);
+//
+//        var words = new HashSet<String>(definitionResponses.length);
+//        var phonetics = new HashMap<String, PhoneticV2>();
+//        var meanings = new HashMap<String, MeaningV2>();
+//
+//        for (DefinitionResponse definitionResponse : definitionResponses) {
+//
+//            // consolidate words
+//            words.add(definitionResponse.getWord());
+//            // consolidate phonetics
+//            Map<String, PhoneticV2> phoneticMap = Arrays.stream(definitionResponse.getPhonetics()).collect(Collectors.toMap(
+//                    Phonetic::getText, phonetic -> new PhoneticV2(phonetic.getText(), phonetic.getAudio()), (text1, text2) -> {
+//                        log.debug("Ignoring duplicate phonetic '{}'", text1);
+//                        return text1;
+//                    }
+//            ));
+//            phonetics.putAll(phoneticMap);
+//            // consolidate meanings
+//            Map<String, MeaningV2> meaningMap = Arrays.stream(definitionResponse.getMeanings()).collect(Collectors.toMap(
+//                    Meaning::getPartOfSpeech, meaning -> {
+//                        List<DefinitionV2> definitions = Arrays.stream(meaning.getDefinitions()).map(
+//                                definition -> new DefinitionV2(definition.getDefinition(), definition.getExample())
+//                        ).collect(Collectors.toList());
+//                        List<String> synonyms = List.of(meaning.getSynonyms());
+//                        List<String> antonyms = List.of(meaning.getAntonyms());
+//                        return new MeaningV2(meaning.getPartOfSpeech(), definitions, synonyms, antonyms);
+//                    },
+//                    MeaningV2::merge
+//            ));
+//            meanings.putAll(meaningMap);
+//        }
+//
+//        ConsolidatedDefinitionV2 consolidatedDefinitionV2 = new ConsolidatedDefinitionV2();
+//        consolidatedDefinitionV2.setWord(words);
+//        consolidatedDefinitionV2.setPhonetics(phonetics);
+//        consolidatedDefinitionV2.setMeanings(meanings);
+//
+//        log.info("Leaving consolidateDefinition(), consolidatedDefinitionV2: {}", consolidatedDefinitionV2);
+//        return consolidatedDefinitionV2;
+//    }
 
-        var words = new HashSet<String>(definitionResponses.length);
-        var phonetics = new HashMap<String, PhoneticV2>();
+    private ConsolidatedDefinitionV2 consolidateDefinitionNew(DefinitionResponse[] definitionResponses) {
+        log.info("Entering consolidateDefinitionNew(), # of definitionResponses: {}", definitionResponses.length);
+
+        var word = "";
         var meanings = new HashMap<String, MeaningV2>();
+        var phonetics = new ArrayList<PhoneticV2>();
+//        var usageExamples = new HashMap<String, List<String>>();
 
+        var phoneticList = new ArrayList<PhoneticV2>();
         for (DefinitionResponse definitionResponse : definitionResponses) {
 
-            // consolidate words
-            words.add(definitionResponse.getWord());
+            word = definitionResponse.getWord();
             // consolidate phonetics
-            Map<String, PhoneticV2> phoneticMap = Arrays.stream(definitionResponse.getPhonetics()).collect(Collectors.toMap(
-                    Phonetic::getText, phonetic -> new PhoneticV2(phonetic.getText(), phonetic.getAudio()), (text1, text2) -> {
-                        log.debug("Ignoring duplicate phonetic '{}'", text1);
-                        return text1;
-                    }
-            ));
-            phonetics.putAll(phoneticMap);
+            phoneticList = (ArrayList<PhoneticV2>) Arrays.stream(definitionResponse.getPhonetics())
+                    .map(phonetic -> {
+                        return new PhoneticV2(phonetic.getText(), phonetic.getAudio());
+                    })
+                    .collect(Collectors.toList());
             // consolidate meanings
             Map<String, MeaningV2> meaningMap = Arrays.stream(definitionResponse.getMeanings()).collect(Collectors.toMap(
                     Meaning::getPartOfSpeech, meaning -> {
-                        List<DefinitionV2> definitions = Arrays.stream(meaning.getDefinitions()).map(
-                                definition -> new DefinitionV2(definition.getDefinition(), definition.getExample())
+                        var definitions = Arrays.stream(meaning.getDefinitions()).map(
+                                definition -> {
+                                    return new DefinitionV2(definition.getDefinition(), definition.getExample());
+                                }
                         ).collect(Collectors.toList());
-                        List<String> synonyms = List.of(meaning.getSynonyms());
-                        List<String> antonyms = List.of(meaning.getAntonyms());
+                        var synonyms = List.of(meaning.getSynonyms());
+                        var antonyms = List.of(meaning.getAntonyms());
                         return new MeaningV2(meaning.getPartOfSpeech(), definitions, synonyms, antonyms);
                     },
                     MeaningV2::merge
@@ -104,11 +151,11 @@ public class DictionaryServiceImpl implements DictionaryService {
         }
 
         ConsolidatedDefinitionV2 consolidatedDefinitionV2 = new ConsolidatedDefinitionV2();
-        consolidatedDefinitionV2.setWord(words);
-        consolidatedDefinitionV2.setPhonetics(phonetics);
+        consolidatedDefinitionV2.setWord(word);
+        consolidatedDefinitionV2.setPhonetics(phoneticList);
         consolidatedDefinitionV2.setMeanings(meanings);
 
-        log.info("Leaving consolidateDefinition(), consolidatedDefinitionV2: {}", consolidatedDefinitionV2);
+        log.info("Leaving consolidateDefinitionNew(), consolidatedDefinitionV2: {}", consolidatedDefinitionV2);
         return consolidatedDefinitionV2;
     }
 }
